@@ -1,0 +1,96 @@
+      <!-- Content Row -->
+      <div class="row">
+        <% if (postall) { %>
+              <% postall.sort((a, b) => a.id - b.id).forEach(post => { %>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card border-left-dark shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-sm font-weight-bold text-   text-uppercase mb-2">Instrument ID : <%= post.id %> 
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <div class="h3 mt-1 mb-0 mr-3 font-weight-bold text-dark-800"><%= post.title %></div>
+                                        </div>
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <div class="h5 mt-2 ml-0 font-weight-bold text-gray-800">  <%= post.content %>  </div>
+                                      </div>
+                                    </div>
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col-auto">
+                                            <div class="h5 mt-2 ml-0 font-weight-bold text-gray-800">Port : <%= post.port %> <br> Baudrate : <%= post.baudrate %>   </div>
+                                          </div>
+                                        </div>
+                                       
+                                </div>
+                                
+                                <div class="col-auto">
+                                    <a class="nav-item active">
+                                        <a class="nav-link" href="/home/<%= post.id %>">
+                                            <i class="mt-4 mr-0 fas fa-cog fa-2x text-gray-800"></i>
+                                          </a>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              <% }); %>
+            </ul>
+          <% } %>
+    
+ <!-- Earnings (Monthly) Card Example -->
+ <div class="col-xl-3 col-md-6 mb-4">
+    <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        Add Instrument</div>
+                    <div class="h5 mb-0 font-weight-bold text-success"> 
+                        <form Class = "ROW" action="/process" method="post" id="dataForm">
+                            <i class="fas fa-plus fa-2x " type="submit" id="submitButton" > </i>
+                            </form>
+            
+                        <div id="dataInputContainer" style="display: none;">
+                            <% if (user) { %>   
+                                <form action="/home/post" method="POST">
+                                    <label for="floatingInput">Title</label>
+                                      <input  class="form-control" name="title" placeholder="Title..."aria-label="Default select example" required></input>                               
+                                      <label for="floatingInput">Content</label>
+                                      <input  class="form-control" name="content" placeholder="Content..."aria-label="Default select example" required></input>                               
+                                      <label for="floatingInput">Port</label>
+                                      <input  class="form-control" name="port" placeholder="Port..."aria-label="Default select example" required></input>                               
+                                      <label for="floatingInput">Baudrate</label>
+                                      <input  class="form-control" name="baudrate" placeholder="Baudrate..."aria-label="Default select example" required></input>   
+                                      <br>                            
+                                  <button type="submit" width="20%" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">Add Instrument</button>    
+                                </form>
+                                <% } %>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-auto">
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        const submitButton = document.getElementById('submitButton');
+        const dataInputContainer = document.getElementById('dataInputContainer');
+
+        submitButton.addEventListener('click', function() {
+            if (dataInputContainer.style.display === 'none') {
+                dataInputContainer.style.display = 'block';
+            } else {
+                dataInputContainer.style.display = 'none';
+            }
+        });
+    </script>
+    <!-- Content Row -->
