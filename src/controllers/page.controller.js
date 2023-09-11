@@ -56,18 +56,24 @@ exports.editpost = async (req, res) => {
 exports.editcon = async (req, res) => {
   const postId = req.params.id;
   const { port,baudrate } = req.body;
-  const post = await db.Post.findByPk(postId,{
-    include : [{model : db.instruments}]
-  });
+  const post = await db.Post.findByPk(postId);
 
   if (post) {
-    console.log(post.instruments)
+
     post.port = port;
     post.baudrate = baudrate;
-    instruments.portId = port;
-     instruments.baudrateId = baudrate;
     await post.save();
-    await instruments.save();
+
+    await db.instruments.update(
+      {
+        portId: port,
+        baudrateId: baudrate, // หรืออาจจะใช้ชื่อคอลัมน์ที่ถูกต้อง
+      },
+      {
+        where: { postId :post.id},
+      }
+    );
+
     res.redirect(`/home/${postId}`);
   } else {
     res.status(404).send('Post not found');

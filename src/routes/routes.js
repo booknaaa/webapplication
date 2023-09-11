@@ -10,11 +10,11 @@ const adminController = require('../controllers/admin.controller.js');
 
 const routes = new Router();
 
-//routes.post('/user', userController.createUser);
-//routes.get('/users', userController.findAllUsers);
-//routes.get('/users/:id', userController.findUserById);
-//routes.put('/users/:id', userController.updateUser);
-//routes.delete('/users/:id', userController.deleteUser);
+routes.post('/user', userController.createUser);
+routes.get('/users', userController.findAllUsers);
+routes.get('/users/:id', userController.findUserById);
+routes.put('/users/:id', userController.updateUser);
+routes.delete('/users/:id', userController.deleteUser);
 
 routes.post('/user/register', memberController.register);
 routes.post('/user/login', memberController.login);
