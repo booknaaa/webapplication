@@ -1,8 +1,8 @@
 const { SerialPort } = require('serialport')
 const { ReadlineParser } = require('@serialport/parser-readline');
-const {instruments} = require('../src/db/models')
-const {value} = require('../src/db/models')
-const db = require('../src/db/models')
+const {instruments} = require('../db/models')
+const {value} = require('../db/models')
+const db = require('../db/models')
 
 exports.serialport = async (req, res) => {
   const postId = req.params.id;
@@ -172,6 +172,7 @@ const post = await db.Post.findByPk(postId, {
           value.destroy({
             where: { instrumentId: valueId },
           });
+          
           res.redirect(`/home/dashboard/${postId}`);
         } else {
           res.send("Ins not found");
@@ -207,14 +208,18 @@ const post = await db.Post.findByPk(postId, {
           const func = await db.instruments.findByPk(funcId);
           let count = 1; 
           if (func) {
-              console.log(func)
-              const commands =  "SENSe:CHANnel 1" + '\r\n' + "SENSe:PROBe 1" + '\r\n' + "INIT" + '\r\n' + "FETCh?" + '\r\n';
+              const c2o2mmands =  ["SENSe:CHANnel 1","SENSe:PROBe 1","INIT","FETCh?"];
+              const input = func.func
+              const output = input.split(',').map(item => item.trim());
+              const Commands = output.join('\r\n');
+
+      
               const port =(func.portId);
               const baudRate = (func.baudrateId);
               const funcid = (func.id);
               const postId = (func.postId);
               let countins = (func.count);
-
+              
               const serialPort = new SerialPort({path: port,
                 baudRate: baudRate, // อัตราเร็วของ Serial Port
                 dataBits: 8,
@@ -226,11 +231,11 @@ const post = await db.Post.findByPk(postId, {
               serialPort.on('open', () => {
                 console.log('Serial Port is open.');
                 sendDataInterval = setInterval(() => {
-                  serialPort.write(commands, (err) => {
+                  serialPort.write(Commands + '\r\n', (err) => {
                     if (err) {
                       console.error('Error writing to serial port:', err);
                     } else {
-                      console.log('Commands sent to serial port.',commands);
+                      console.log('Commands sent to serial port.',Commands);
                     }
                   });
                 }, 5000); // ส่งทุก 5 วินาที
@@ -239,6 +244,7 @@ const post = await db.Post.findByPk(postId, {
                 let dataCount = 0;
                 
                 serialPort.on('data', async (data) => {
+                  console.log(data)
                   const newBuffer = Buffer.from(data);
                   receivedData = Buffer.concat([receivedData, newBuffer]);
                   dataCount++;
@@ -288,7 +294,7 @@ const post = await db.Post.findByPk(postId, {
 
 
               //res.redirect(`/home/dashboard/${post.postId}`);
-              res.redirect(`/home/dashboard/data/${func.id}`);
+              res.redirect(`/home/dashboard/${postId}`);
             } else {
               res.send('Post not found');
             }
@@ -299,14 +305,18 @@ const post = await db.Post.findByPk(postId, {
             const func = await db.instruments.findByPk(funcId);
             let count = 1; 
             if (func) {
-                console.log(func)
-                const commands =  "SENSe:CHANnel 1" + '\r\n' + "SENSe:PROBe 1" + '\r\n' + "INIT" + '\r\n' + "FETCh?" + '\r\n';
+                const c2o2mmands =  ["SENSe:CHANnel 1","SENSe:PROBe 1","INIT","FETCh?"];
+                const input = func.func
+                const output = input.split(',').map(item => item.trim());
+                const Commands = output.join('\r\n');
+
+        
                 const port =(func.portId);
                 const baudRate = (func.baudrateId);
                 const funcid = (func.id);
                 const postId = (func.postId);
                 let countins = (func.count);
-  
+                
                 const serialPort = new SerialPort({path: port,
                   baudRate: baudRate, // อัตราเร็วของ Serial Port
                   dataBits: 8,
@@ -318,11 +328,11 @@ const post = await db.Post.findByPk(postId, {
                 serialPort.on('open', () => {
                   console.log('Serial Port is open.');
                   sendDataInterval = setInterval(() => {
-                    serialPort.write(commands, (err) => {
+                    serialPort.write(Commands + '\r\n', (err) => {
                       if (err) {
                         console.error('Error writing to serial port:', err);
                       } else {
-                        console.log('Commands sent to serial port.',commands);
+                        console.log('Commands sent to serial port.',Commands);
                       }
                     });
                   }, 5000); // ส่งทุก 5 วินาที
@@ -331,6 +341,7 @@ const post = await db.Post.findByPk(postId, {
                   let dataCount = 0;
                   
                   serialPort.on('data', async (data) => {
+                    console.log(data)
                     const newBuffer = Buffer.from(data);
                     receivedData = Buffer.concat([receivedData, newBuffer]);
                     dataCount++;
@@ -380,7 +391,7 @@ const post = await db.Post.findByPk(postId, {
   
   
                 //res.redirect(`/home/dashboard/${post.postId}`);
-                res.redirect(`/home/dashboard/${func.postId}`);
+                res.redirect(`/home/dashboard/data/${funcid}`);
               } else {
                 res.send('Post not found');
               }

@@ -15,8 +15,7 @@ dotenv.config();
 //post
 exports.register = async (req, res, next) => {
   try {
-    //res.status(201).json(req.body);
-    //add new user and return 201
+
     const salt = await bcrypt.genSalt(10);
     var usr = {
       username: req.body.username,
@@ -25,14 +24,15 @@ exports.register = async (req, res, next) => {
       email: req.body.email,
       gender: req.body.gender,
       role: req.body.role,
-      //password : await bcrypt.hash(req.body.password, salt),
+ 
       password: await bcrypt.hashSync(req.body.password, salt),
     };
     created_user = await User.create(usr);
-    //res.status(201).json(created_user);
+ 
+    res.redirect("/login");
+       //res.status(201).json(created_user);
     //console.log("User registered successfully!")
     //res.status(201).json({ message: "User registered successfully" });
-    res.redirect("/login");
     //console.log(req.body)
     // return res.redirect('/')
   } catch (err) {

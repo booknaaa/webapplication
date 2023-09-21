@@ -10,17 +10,17 @@
     <meta name="author" content="">
 
     <link rel="icon" type="image/png" href="/images/icons8-p-64.png">
-    <title>Admin Dashboard</title>
+    <title>Admin Charts</title>
 
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="/stylesheets/member.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         table {
             width: 100%;
@@ -144,14 +144,14 @@
                         </div>
                     </div>
                 </div>
-                <% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
-                    <div class="row">
-                        <div class="col-xl-8 col-lg-8">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
+                <div class="row">
+                    <% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
+                    <div class="col-xl-6 col-lg-6"> 
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div
                                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h5 class="m-0 font-weight-bold text-black">DASHBOARD <%= post.id %>.<%= post.title %> <%= item.id %>.<%= item.funcname %> </h5>
+                                <h5 class="m-0 font-weight-bold text-primary">CHART ID:<%= item.id %></h5>
                                 <div class="dropdown no-arrow">
                                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -160,10 +160,10 @@
                                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                         aria-labelledby="dropdownMenuLink">
                                         <div class="dropdown-header">Dropdown :</div>
-                                        <form method="POST" action="/admin/post/<%= item.id %>">
+                                        <form method="POST" action="/home/dashboard/data/function/<%= item.id %>">
                                             <button class=" dropdown-item" type="submit">Action</button>
                                         </form>
-                                        <form method="POST" action="/admin/delete/<%= item.id%>">
+                                        <form method="POST" action="/home/dashboard/delete/data/<%= item.id%>">
                                             <button class=" dropdown-item" type="submit">Delete</button>
                                         </form>
                                         <div class="dropdown-divider"></div>
@@ -171,123 +171,77 @@
                                     </div>
                                 </div>
                             </div>
-                                <!-- Card Body -->
-                                <div class="card-body" style=" height: 15rem; overflow: auto;">
-                                    <table style="text-align:center">
-                                        <tr>
-                                          <th>ID</th>
-                                          <th>VALUE</th>
-                                          <th>CREATED AT</th>
-                                        </tr>
-                                        <% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
-                                        <tr>
-                                             <td><%= value.countId  %></td>
-                                          <td><%= value.datavalue  %></td>
-                                          <td><%= value.createdAt.toDateString() %> <%= value.createdAt.toLocaleTimeString() %></td>
-                                        </tr>
-                                        <% }); %>
-                                      </table>
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h5 class="m-0 font-weight-bold text-primary">CHART ID:<%= item.id %></h5></h5>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                        <canvas id="chart-<%= item.id %>"></canvas>
-                                </div>
-                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                    <canvas id="chart-<%= item.id %>"></canvas>
+                         
+                                        <!-- Card Header - Dropdown -->
+                                        <!-- Card Body -->
+                                        <div class="card-body"  style=" height: 5rem; overflow: auto;">
+                                            <table style="text-align:center" >
+                                                <tr>
+                                                  <th>ID</th>
+                                                  <th>VALUE</th>
+                                                  <th>CREATED AT</th>
+                                                </tr>
+                                                <% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
+                                                <tr>
+                                                     <td><%= value.countId  %></td>
+                                                  <td><%= value.datavalue  %></td>
+                                                  <td><%= value.createdAt.toDateString() %> <%= value.createdAt.toLocaleTimeString() %></td>
+                                                </tr>
+                                                <% }); %>
+                                              </table>
+                                        </div>
+                                    </div>
                         </div>
-                        <div class="col-xl-4 col-lg-4">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h5 class="m-0 font-weight-bold text-black">REALTIME</h5>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <%= item.value%>
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h5 class="m-0 font-weight-bold text-black">FUNCTOIN</h5>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body" style="background-color:rgb(0, 0, 0);">
-                                     <code><%= item.func %></code>
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h5 class="m-0 font-weight-bold text-black">DETAIL</h5>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <b>FUNCTION :</b>     <%= item.id %>   <%= item.funcname %><br>
-                                    <b>INSTRUMENT :</b>     <%= post.id %>   <%= post.title %><br>
-                                    <b>COUNT :</b>     <%= item.count %><br>
-                                    <b>PORT :</b>     <%= item.portId %><br>
-                                    <b>BAUDRATE :</b> <%= item.baudrateId %>  
-                                </div>
-                            </div>
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-black">EDIT</h6>
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="form-row">
-                                        <div class="col-md-auto">
-                                            <form action="/home/<%= item.id %>/function/countdash" method="POST">
-                                                <div class="form-row">
-                                                    <div class="col-auto">
-                                                    <input class="form-control" style="width: 60px;" type="number" name="count" id="numberInput" placeholder="<%= item.count %>" required>
-                                                </div><div class="col-auto">
-                                                    <button class=" btn btn-sm btn-primary shadow-sm" type="submit">Count</button>
-                                            </div>
-                                            </div>
-                                            </form>     
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <form action="/admin/post/<%= item.id %>" method="POST">
-                                                <button class=" btn btn-sm btn-warning shadow-sm" type="submit">Start</button>
-                                              </form>       
-                                        </div>
-                                        <div class="col-md-auto">
-                                            <form action="/home/dashboard/data/<%= item.id %>" method="GET">
-                                                <button class=" btn btn-sm btn-info shadow-sm" type="submit">Visit</button>
-                                              </form>       
-                                        </div>
-                                        <div class="col-md-auto">
-                                    <form action="/home/<%= item.id %>/function/delete" method="POST">
-                                      <button class=" btn btn-sm btn-danger shadow-sm" type="submit">Delete</button>
-                                    </form>
-                                        </div>
-                                        </div>
-                                </div>
-                            </div>
-                        </div>
-         
                     </div>
-                    
                     <% }); %>
+          
 
-
-
-
-
-                <% }); %>
+            </div>
+        <div class="row">
+                    <div class="col-xl-12 col-lg-12 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-2">
+                                            Add Function</div>
+                                        <div class="h5 mb-0 font-weight-bold text-success"> 
+                                            <form Class = "ROW" action="/process" method="post" id="dataForm">
+                                                <i class="fas fa-plus fa-2x " type="submit" id="submitButton2" > </i>
+                                                </form>
+                                                <br>
+                                            <div id="dataInputContainer2" style="display: none;">
+                                                <% if (post) { %>   
+                                                    <form action="/home/<%= post.id %>/function/post" method="POST">
+                                                <div class="form-row">
+                                                     <div class="col-md-auto">
+                                                        <label for="floatingInput">Function Name</label>
+                                                        <input class="form-control " name="funcname" placeholder="Function Name..."aria-label="Default select example" required></input>
+                                                    </div>
+                                                        <div class="col-md-7">
+                                                        <label for="floatingInput">Command</label>
+                                                        <textarea rows="3" cols="50" class="form-control" name="func" placeholder="Command..."aria-label="Default select example" required></textarea>
+                                                    </div>
+                                                    <div class="col-md-auto">
+                                                          <label for="floatingInput">Submit</label><br>
+                                                        <button type="submit" width="20%" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm">Add Function</button>    
+                                                    </div>
+                                                </div>
+                                                    </form>
+                                                    <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                             </div>
+                         </div>
+                     </div>   
+                 </div>
+             </div>                
+        <% }); %>
+                
         </div>
   
 
@@ -378,39 +332,38 @@
     });
   </script>
       <script>
-  <% postall.sort((a, b)=> a.id - b.id).forEach(post => { %>
-<% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
-    var dataLabels<%= item.id %>  = [];
-    var dataValues<%= item.id %>  = [];
-<% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
-  dataLabels<%= item.id %>.push('<%= value.createdAt.toLocaleTimeString() %>');
-  dataValues<%= item.id %>.push(<%= value.datavalue %>);
-<% }); %>
-
-  var ctx<%= item.id %> = document.getElementById('chart-<%= item.id %>').getContext('2d');
-  var myChart<%= item.id %> = new Chart(ctx<%= item.id %>, {
-    type: 'line', // หรือปรับเป็นประเภทของกราฟที่คุณต้องการใช้
-    data: {
-      labels: dataLabels<%= item.id %>,
-      datasets: [{
-        label: 'ข้อมูล',
-        data: dataValues<%= item.id %>,
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // สีพื้นหลังกราฟ
-        borderColor: 'rgba(75, 192, 192, 1)', // สีเส้นกราฟ
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          
-        }
-      }
-    }
-  });
-  <% }); %>
-  <% }); %> 
-</script>
+        <% postall.sort((a, b)=> a.id - b.id).forEach(post => { %>
+        <% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
+            var dataLabels<%= item.id %>  = [];
+            var dataValues<%= item.id %>  = [];
+        <% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
+          dataLabels<%= item.id %>.push('<%= value.createdAt.toLocaleTimeString() %>');
+          dataValues<%= item.id %>.push(<%= value.datavalue %>);
+        <% }); %>
+        
+          var ctx<%= item.id %> = document.getElementById('chart-<%= item.id %>').getContext('2d');
+          var myChart<%= item.id %> = new Chart(ctx<%= item.id %>, {
+            type: 'line', // หรือปรับเป็นประเภทของกราฟที่คุณต้องการใช้
+            data: {
+              labels: dataLabels<%= item.id %>,
+              datasets: [{
+                label: 'ข้อมูล',
+                data: dataValues<%= item.id %>,
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // สีพื้นหลังกราฟ
+                borderColor: 'rgba(75, 192, 192, 1)', // สีเส้นกราฟ
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  
+                }
+              }
+            }
+          });
+          <% }); %>   <% }); %>
+        </script>
 </body>
 
 </html>

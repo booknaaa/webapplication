@@ -10,7 +10,7 @@
     <meta name="author" content="">
 
     <link rel="icon" type="image/png" href="/images/icons8-p-64.png">
-    <title>Dashboard</title>
+    <title>Charts</title>
 
     <!-- Custom fonts for this template-->
     <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -28,7 +28,7 @@
         }
         th, td {
             border: 0px solid #ddd;
-            padding: 8px;
+            padding: 0px;
             text-align: center;
         }
         .center {
@@ -49,7 +49,7 @@
 
             <!-- Main Content -->
             <div id="content">
-                <%- include('include/dashboard/_barpost.ejs') %>
+                <%- include('include/charts/_bar.ejs') %>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
@@ -133,134 +133,60 @@
                     </div>
                 </div>
             </div>
-            <% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
             <div class="row">
-                <div class="col-xl-8 col-lg-8"> 
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div
-                        class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                        <h5 class="m-0 font-weight-bold text-primary">DASHBOARD <%= post.id %>.<%= post.title %> <%= item.id %>.<%= item.funcname %> </h5>  
-                        <div class="dropdown no-arrow">
-                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-primary"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                aria-labelledby="dropdownMenuLink">
-                                <div class="dropdown-header">Dropdown :</div>
-                                <form method="POST" action="/home/dashboard/data/function/<%= item.id %>">
-                                    <button class=" dropdown-item" type="submit">Action</button>
-                                </form>
-                                <form method="POST" action="/home/dashboard/delete/data/<%= item.id%>">
-                                    <button class=" dropdown-item" type="submit">Delete</button>
-                                </form>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="/home/dashboard/data/<%= item.id %>">Visit</a>
-                            </div>
-                        </div>
-                    </div>
-                        <!-- Card Body -->
-                        <div class="card-body"  style=" height: 15rem; overflow: auto;">
-                            <table style="text-align:center">
-                                <tr>
-                                  <th>ID</th>
-                                  <th>VALUE</th>
-                                  <th>CREATED AT</th>
-                                </tr>
-                                <% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
-                                <tr>
-                                     <td><%= value.countId  %></td>
-                                  <td><%= value.datavalue  %></td>
-                                  <td><%= value.createdAt.toDateString() %> <%= value.createdAt.toLocaleTimeString() %></td>
-                                </tr>
-                                <% }); %>
-                              </table>
-                        </div>
-                    </div>
+                <% post.instruments.sort((a, b) => a.id - b.id).forEach(item => { %>
+                <div class="col-xl-6 col-lg-6"> 
                     <div class="card shadow mb-4">
                         <!-- Card Header - Dropdown -->
                         <div
                             class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h5 class="m-0 font-weight-bold text-primary">CHART ID:<%= item.id %></h5></h5>
+                            <h5 class="m-0 font-weight-bold text-primary">CHART ID:<%= item.id %></h5>
+                            <div class="dropdown no-arrow">
+                                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-primary"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                    aria-labelledby="dropdownMenuLink">
+                                    <div class="dropdown-header">Dropdown :</div>
+                                    <form method="POST" action="/home/dashboard/data/function/<%= item.id %>">
+                                        <button class=" dropdown-item" type="submit">Action</button>
+                                    </form>
+                                    <form method="POST" action="/home/dashboard/delete/data/<%= item.id%>">
+                                        <button class=" dropdown-item" type="submit">Delete</button>
+                                    </form>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="/home/dashboard/data/<%= item.id %>">Visit</a>
+                                </div>
+                            </div>
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
                                 <canvas id="chart-<%= item.id %>"></canvas>
-                        </div>
+                     
+                                    <!-- Card Header - Dropdown -->
+                                    <!-- Card Body -->
+                                    <div class="card-body"  style=" height: 5rem; overflow: auto;">
+                                        <table style="text-align:center" >
+                                            <tr>
+                                              <th>ID</th>
+                                              <th>VALUE</th>
+                                              <th>CREATED AT</th>
+                                            </tr>
+                                            <% item.values.sort((a, b) => a.id - b.id).forEach(value => { %>
+                                            <tr>
+                                                 <td><%= value.countId  %></td>
+                                              <td><%= value.datavalue  %></td>
+                                              <td><%= value.createdAt.toDateString() %> <%= value.createdAt.toLocaleTimeString() %></td>
+                                            </tr>
+                                            <% }); %>
+                                          </table>
+                                    </div>
+                                </div>
                     </div>
                 </div>
-                <div class="col-xl-4 col-lg-4">
-                   
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h5 class="m-0 font-weight-bold text-primary">FUNCTION</h5>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body" style="background-color:rgb(0, 0, 0);">
-                             <code><%= item.func %></code>
-                        </div>
-                    </div>
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h5 class="m-0 font-weight-bold text-primary">DETAIL</h5>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <b>FUNCTION :</b>     <%= item.id %>   <%= item.funcname %><br>
-                            <b>INSTRUMENT :</b>     <%= post.id %>   <%= post.title %><br>
-                            <b>COUNT :</b>     <%= item.count %><br>
-                            <b>PORT :</b>     <%= item.portId %><br>
-                            <b>BAUDRATE :</b> <%= item.baudrateId %>  
-                        </div>
-                    </div>
-                    <div class="card shadow mb-4">
-                        <!-- Card Header - Dropdown -->
-                        <div
-                            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                            <h5 class="m-0 font-weight-bold text-primary">EDIT</h5>
-                        </div>
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="col-md-auto">
-                                    <form action="/home/<%= item.id %>/function/countdash" method="POST">
-                                        <div class="form-row">
-                                            <div class="col-auto">
-                                            <input class="form-control" style="width: 60px;" type="number" name="count" id="numberInput" placeholder="<%= item.count %>" required>
-                                        </div><div class="col-auto">
-                                            <button class=" btn btn-sm btn-primary shadow-sm" type="submit">Count</button>
-                                    </div>
-                                    </div>
-                                    </form>     
-                                </div>
-                                <div class="col-md-auto">
-                                    <form action="/home/dashboard/data/function/<%= item.id %>" method="POST">
-                                        <button class=" btn btn-sm btn-warning shadow-sm" type="submit">Start</button>
-                                      </form>       
-                                </div>
-                                <div class="col-md-auto">
-                                    <form action="/home/dashboard/data/<%= item.id %>" method="GET">
-                                        <button class=" btn btn-sm btn-info shadow-sm" type="submit">Visit</button>
-                                      </form>       
-                                </div>
-                                <div class="col-md-auto">
-                            <form action="/home/dashboard/delete/data/<%= item.id %>" method="POST">
-                              <button class=" btn btn-sm btn-danger shadow-sm" type="submit">Delete</button>
-                            </form>
-                                </div>
-                                </div>
-                        </div>  
-                    </div>
-                </div>
- 
-            </div>
-            
-            <% }); %>
+                <% }); %>
+            </div>     
             <div class="row">
                 <div class="col-xl-12 col-lg-12 mb-4">
                     <div class="card border-left-success shadow h-100 py-2">

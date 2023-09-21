@@ -1,5 +1,6 @@
 const express = require ( 'express');
 const routes  = require ('./src/routes/routes');
+
 //import config from './config/constants';
 const bodyParser = require ('body-parser');
 const db = require('./src/db/models');
@@ -17,11 +18,17 @@ const PORT = process.env.PORT || 3000
 
 const app = express();
 const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs'); // หรือใช้ไลบรารี JSON หากไฟล์ Swagger Specification เป็น JSON
+const swaggerSpec = require('./swagger');
+const http = require('http');
+const socketIO = require('socket.io');
+const server = http.createServer(app);
+const io = socketIO(server);
+//const YAML = require('yamljs'); // หรือใช้ไลบรารี JSON หากไฟล์ Swagger Specification เป็น JSON
 
-const swaggerDocument = YAML.load('src/swagger.yaml'); // ระบุพาธไปยังไฟล์ Swagger Specification ของคุณ
+//const swaggerDocument = YAML.load('src/swagger.yaml'); // ระบุพาธไปยังไฟล์ Swagger Specification ของคุณ
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+//app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // กำหนด middleware โดยใช้ Path Pattern
 // ทุก request จะต้องมี path ที่ขึ้นต้นด้วย ค่าที่เรา config ไว้ในไฟล์ constants
 app.use(bodyParser.json());
@@ -61,12 +68,47 @@ app.use('/post', routes);
 app.use('/admin', routes);
 
 
-db.sequelize.sync().then(() => {
-  app.listen(PORT), () => {
+/*db.sequelize.sync().then(() => {
+  server.listen(PORT), () => {
     console.log(`
     Title : Project1
     Port: ${PORT}
     Env: ${app.get('env')}
     Server is running on port ${port}
   `);
-  }});
+  }});*/
+server.listen(PORT, () => {
+  console.log(`
+  Title : Project1
+  Port: ${PORT}
+  Env: ${app.get('env')}
+  Server is running on port ${PORT}
+`);
+});
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+  let interval; 
+  socket.on('stopSerial', () => {
+    console.log('Stop Serialport');
+    if (interval) {
+      clearInterval(interval); // หยุดการส่งข้อมูลด้วยการล้าง interval เฉพาะเมื่อ interval มีค่าไม่เท่ากับ undefined
+    }
+  });
+  
+  socket.on('startSerial', () => {
+    console.log('Start Serialport');
+    if (!interval && typeof global.myValue !== 'undefined') {
+      interval = setInterval(() => {
+        io.emit('serialData', global.myValue); // ส่งข้อมูลไปยังไคลเอ็นต์ทุกๆ 1 วินาที
+
+      }, 5000); // ส่งข้อมูลทุกๆ 5 วินาที หาก interval ยังไม่ถูกสร้าง
+    }
+  });
+  
+});
+
+

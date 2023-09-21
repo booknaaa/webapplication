@@ -217,8 +217,8 @@ const post = await db.Post.findByPk(postId, {
     
         // สร้างข้อมูลที่เหมาะสมสำหรับแผนภูมิ
         const labels = data.map(item => item.countId); // รายการของค่า xvalue
-        const values = data.map(item => item.datavalue); // รายการของค่า yvalue 
-        const postid = (ins.postId)
+        const values = data.map(item => item.datavalue); // รายการของค่า yvalue
+          const postid = (ins.postId)
           const countid = (ins.count)
           const post = await db.Post.findByPk(postid)
           const allid = await db.Post.findByPk(postid, {
@@ -436,11 +436,18 @@ const post = await db.Post.findByPk(postId, {
 
       exports.serialportstop = async (req, res) => {
         const funcId = req.params.id;
-        SerialPort.close(() => {
-        console.log('การเชื่อมต่อ Serial Port ถูกปิดแล้ว');
+        if (isSerialPortConnected.isOpen) {
+          isSerialPortConnected.close((err) => {
+            if (err) {
+              console.error('เกิดข้อผิดพลาดในการปิดการเชื่อมต่อ Serial Port:', err);
+            } else {
+              console.log('การเชื่อมต่อ Serial Port ถูกปิดแล้ว');
+            }
+          });
+        }
         res.redirect(`/home/dashboard/data/${funcId}`);
-        });
       };
+
 
     exports.savevalue = async (req, res) => {
         const funcId = req.params.id;

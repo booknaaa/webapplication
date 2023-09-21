@@ -7,6 +7,13 @@ const auth = require('../middleware/auth');
 const instruments = require('../controllers/instruments.controller.js');
 const serialport = require('../controllers/serialport.controller.js');
 const adminController = require('../controllers/admin.controller.js');
+const realtimeController = require('../controllers/realtime.controller');
+
+const swaggerSpec = require('../../swagger');
+const express = require('express');
+const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
 
 const routes = new Router();
 
@@ -55,6 +62,7 @@ routes.get('/admin/dashboard',auth.isAuthenticated, adminController.admindashboa
 routes.post('/admin/post/:id' , adminController.serialportadmin);
 routes.post('/admin/delete/:id' , adminController.admindeletevalue);
 routes.get('/admin/admin' ,auth.isAuthenticated, adminController.adminadmin);
+routes.get('/admin/charts',auth.isAuthenticated, adminController.chartdashboard);
 //routes.get('/admin/instru/edit/:id', pageController.editadmin);
 //function
 routes.post('/home/:id/function/post',instruments.functionpost);
@@ -64,13 +72,18 @@ routes.post('/home/:id/function/countdash',instruments.functioncountdash);
 routes.post('/home/:id/function/countdata',instruments.functioncountdata);
 //dashboard
 routes.get('/home/dashboard/:id',auth.isAuthenticated,serialport.pagedashboard);
+routes.get('/home/dashboard/charts/:id',auth.isAuthenticated,serialport.chartdashboard);
 //routes.get('/home/dashboard/:id/refresh',serialport.serialport);
 routes.post('/home/dashboard/data/function/:id',serialport.serialportpost);
 routes.post('/home/dashboard/function/:id',serialport.serialportdash);
+//routes.get('/home/dashboard/data/:id',auth.isAuthenticated,serialport.datadashboard);
 routes.get('/home/dashboard/data/:id',auth.isAuthenticated,serialport.datadashboard);
 routes.post('/home/dashboard/delete/data/:id',serialport.deletevalue);
+routes.post('/home/dashboard/delete/:id',serialport.deletevaluedata);
+routes.post('/home/dashboard/stop/:id',serialport.serialportstop);
+routes.post('/home/dashboard/start/:id',serialport.savevalue);
+routes.get('/download/:id',serialport.export);
 //routes.post('/home/dashboard/value',serialport.postvalue);
-
 //routes.get('/charts',instruments.chart2);
 
 module.exports = routes;
