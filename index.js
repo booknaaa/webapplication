@@ -113,7 +113,7 @@ io.on('connection', (socket) => {
 });
 
 
-const socket = io('https://project1-rho-eight.vercel.app');
+const socket = io('https://final-project6-2.vercel.app/');
 
 socket.on('connect', () => {
   console.log('Connected to Socket.io server');
