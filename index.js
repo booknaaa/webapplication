@@ -20,9 +20,9 @@ const app = express();
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 const http = require('http');
-const socketIO = require('socket.io');
+const { socketIO } = require('socket.io');
 const server = http.createServer(app);
-const io = socketIO('server');
+const io = new socketIO('server');
 //const socket = io(' https://project1-666w43tll-booknaaa.vercel.app');
 //const YAML = require('yamljs'); // หรือใช้ไลบรารี JSON หากไฟล์ Swagger Specification เป็น JSON
 
@@ -112,13 +112,3 @@ io.on('connection', (socket) => {
   
 });
 
-
-const socket = io('https://final-project6-2.vercel.app/');
-
-socket.on('connect', () => {
-  console.log('Connected to Socket.io server');
-});
-
-socket.on('disconnect', () => {
-  console.log('Disconnected from Socket.io server');
-});
