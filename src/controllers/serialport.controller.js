@@ -211,21 +211,25 @@ const post = await db.Post.findByPk(postId, {
           include: [{ model: db.value}]
     });
     if(ins){
-              const data = await db.value.findAll({
+              const dataall = await db.value.findAll({
           where: { instrumentId: insId  },
-         });
-    
+        attributes: ['datavalue','createdAt','countId'], // เลือกเฉพาะคอลัมน์ port
+      });
+        const valueall = await value.findAll({
+          where: { instrumentId: insId  },
+      });
+
         // สร้างข้อมูลที่เหมาะสมสำหรับแผนภูมิ
-        const labels = data.map(item => item.countId); // รายการของค่า xvalue
-        const values = data.map(item => item.datavalue); // รายการของค่า yvalue 
-        const postid = (ins.postId)
+          const labels = dataall.map(item => item.createdAt); // รายการของค่า     
+          const values = dataall.map(item => item.datavalue); // รายการของค่า yvalue 
+          const postid = (ins.postId)
           const countid = (ins.count)
           const post = await db.Post.findByPk(postid)
           const allid = await db.Post.findByPk(postid, {
             include: [{ model: db.instruments }]
               });
 
-            res.render('dashboarddata', {countid,ins,post,allid,labels,values,data: global.myValue,isSerialPortConnected } );
+            res.render('dashboarddata', {dataall,countid,ins,post,allid,labels,values,data: global.myValue,isSerialPortConnected } );
                 
           } else {
             res.send('Ins not found');
@@ -296,8 +300,21 @@ const post = await db.Post.findByPk(postId, {
                       {
                         where: { id:funcid },
                       }
-                    );                     
-                    }
+                      );
+                      if(count<=countins){
+                         value.create({
+                           datavalue: formattedNumber, 
+                           instrumentId: funcid,
+                           postId: postId,
+                           countId:count++
+                         })}
+                         else{
+                           count = 1;
+                           serialPort.close(() => {
+                             console.log('ปิดการเชื่อมต่อ Serial Port');
+                           });
+                         }
+                       }
                   });
                   serialPort.on('error', (err) => {
                     console.error('Serial Port error:', err);

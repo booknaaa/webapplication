@@ -1,9 +1,10 @@
 {
   "name": "finalproject3",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
-    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "nodemon test.js",
     "port": "nodemon ../src/services/instru.service.js",
     "chart": "nodemon ../src/public/javascripts/chart-pie-demo.js"
@@ -27,6 +28,7 @@
     "express-session": "^1.17.3",
     "express-validator": "^7.0.1",
     "express-ws": "^5.0.2",
+    "firebase": "^10.4.0",
     "flash": "^1.1.0",
     "http-errors": "~1.6.3",
     "import-export": "^1.0.1",
@@ -43,8 +45,12 @@
     "swagger": "^0.7.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
+    "vercel": "^32.3.1",
     "ws": "^8.14.1",
     "xlsx-populate": "^1.21.0",
     "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@vercel/node": "^3.0.5"
   }
 }

@@ -22,7 +22,8 @@ const swaggerSpec = require('./swagger');
 const http = require('http');
 const socketIO = require('socket.io');
 const server = http.createServer(app);
-const io = socketIO(server);
+const io = socketIO('https://project1-rho-eight.vercel.app');
+//const socket = io(' https://project1-666w43tll-booknaaa.vercel.app');
 //const YAML = require('yamljs'); // หรือใช้ไลบรารี JSON หากไฟล์ Swagger Specification เป็น JSON
 
 //const swaggerDocument = YAML.load('src/swagger.yaml'); // ระบุพาธไปยังไฟล์ Swagger Specification ของคุณ

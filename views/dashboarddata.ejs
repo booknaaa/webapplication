@@ -601,9 +601,14 @@
   </script>
 
 <script>
-     // ใช้ข้อมูลที่ถูกส่งมาจาก Express.js แทนที่ข้อมูล placeholder
-    const xValues =  [<%= labels %>];
-    const yValues =  [<%= values %>];
+    
+    
+    var xValues= [];
+    var yValues= [];
+<% ins.values.sort((a, b) => a.id - b.id).forEach(item => { %>
+    xValues.push('<%= item.createdAt.toLocaleTimeString() %>');
+    yValues.push(<%= item.datavalue %>);
+<% }); %>
 
     const ctx1 = document.getElementById('myChart').getContext('2d');
     const myChart = new Chart(ctx1, {
