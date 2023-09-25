@@ -113,3 +113,12 @@ io.on('connection', (socket) => {
 });
 
 
+const socket = io('https://project1-c1gaqmmto-booknaaa.vercel.app/');
+
+socket.on('connect', () => {
+  console.log('Connected to Socket.io server');
+});
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from Socket.io server');
+});

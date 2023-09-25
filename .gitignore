@@ -3,3 +3,4 @@ test.
 save
 
 .vercel
+.env*.local
